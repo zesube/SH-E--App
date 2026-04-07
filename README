@@ -1,81 +1,56 @@
-#Secure Coding Demo App
 
-This project is a simple Python command-line application for a security assignment. It demonstrates:
+# Secure Coding Demo App
 
-- User login with role-based access control
-- SHA-256 hashing for strings and files
-- A simple substitution cipher using a Caesar cipher
-- Digital signature generation and verification using OpenSSL
+This Python command-line app fulfills the Ivy Tech security assignment. It combines **user login with role-based access control (RBAC)** alongside the required crypto features: SHA-256 hashing, Caesar cipher, and OpenSSL digital signatures.
 
-##Files
+## Files Included
+- `app.py` – Main application with login, RBAC, and all features
+- `sample_message.txt` – Test file for hashing/signing ("Sample content for crypto demo.")
+- `private_key.pem` – Generated RSA private key (admin feature)
+- `public_key.pem` – Generated RSA public key (admin feature)  
+- `signature.sig` – Sample signature file (admin feature)
+- `README.md` – This file
 
-- `app.py`: Main application
-- `private_key.pem`: Sample RSA private key generated during testing
-- `public_key.pem`: Sample RSA public key generated during testing
-- `sample_message.txt`: Sample file for hash/signature testing
-- `signature.sig`: Sample digital signature for `sample_message.txt`
-- `README`: Brief explanation of the project
+## Sample Login Credentials
+Passwords stored as **SHA-256 hashes** (never plaintext):
+- **admin** / `Admin123!` (full access)
+- **student** / `Student123!` (limited access)
 
-##Sample Login Accounts
+## Role-Based Access Control
+| Role | Permissions |
+|------|-------------|
+| **Student** | Hash strings, encrypt text, decrypt text |
+| **Admin** | All student features + hash files, generate RSA keys, sign files, verify signatures |
 
-- `admin` / `Admin123!`
-- `student` / `Student123!`
+## Setup & Run
+1. Ensure **OpenSSL** is installed (`openssl version` to check)
+2. `pip install werkzeug` (for secure password hashing)
+3. `python app.py.`
+4. Login → Access features based on your role
 
-The passwords are stored in the code as SHA-256 hashes instead of plain text.
+## Feature Breakdown
 
-##Role-Based Access Control
+### SHA-256 Hashing
+Generates collision-resistant SHA-256 hashes to verify data integrity.
+- **Strings**: Enter any text → instant hash
+- **Files** (admin): Hash `sample_message.txt` → detect even 1-bit changes
 
-- `student` can:
-  - Hash a string
-  - Encrypt text
-  - Decrypt text
-- `admin` can:
-  - Hash a string
-  - Hash a file
-  - Encrypt text
-  - Decrypt text
-  - Generate RSA keys with OpenSSL
-  - Sign files
-  - Verify file signatures
+### Caesar Cipher (Substitution Cipher)
+Simple shift cipher (e.g., shift=3: A→D, B→E).
+- Encrypt: "Hello" → "Khoor" 
+- Decrypt: Reverse shift
+- User picks shift value (1-25)
 
-## How to Run
+### Digital Signatures (Admin Only)
+Uses OpenSSL for RSA SHA-256 signatures:
+1. Generate 2048-bit RSA key pair
+2. Sign file: `openssl dgst -sha256 -sign private_key.pem`
+3. Verify: `openssl dgst -sha256 -verify public_key.pem`
+Proves file authenticity & integrity.
 
-From the project folder:
-
-```bash
-python3 app.py
-```
-
-##Feature Summary
-
-###1. SHA-256 Hashing
-
-The app can generate a SHA-256 hash for:
-
-- Any text entered by the user
-- A file such as `sample_message.txt`
-
-This demonstrates file integrity checking because even a small file change produces a different hash.
-
-###2. Caesar Cipher
-
-The app can encrypt and decrypt text using a Caesar cipher. The user enters text and a shift value, and the app rotates each letter by that amount.
-
-###3. Digital Signatures
-
-The admin role can use OpenSSL to:
-
-- Generate an RSA private/public key pair
-- Sign a file using the private key
-- Verify the signature using the public key
-
-This illustrates how digital signatures use a private key to create a signature and a public key to verify authenticity.
-
-##Notes for Assignment Outcomes
-
-- Randomness affects cryptographic strength because secure key generation depends on unpredictable random values.
-- A Caesar cipher is a simple substitution cipher and is included for the encryption requirement.
-- SHA-256 is used to verify message or file integrity.
-- OpenSSL is used to demonstrate the private/public key signature workflow.
-
+## Assignment Outcomes Addressed
+- **3.1 Randomness**: OpenSSL keys use CSPRNG (/dev/urandom)
+- **4.1 Substitution Cipher**: Caesar implementation
+- **4.2 SHA-256**: File/string integrity verification
+- **4.3 Digital Signatures**: Complete sign/verify workflow
 
